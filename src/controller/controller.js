@@ -87,6 +87,7 @@ router.get('/image/:imageName', (req, res) => {
   const imagePath = path.join(
     __dirname,
     '..',
+    '..',
     'helper',
     'screenshots',
     imageName,
