@@ -3,9 +3,9 @@ const puppeteer = require('puppeteer');
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
+  cloud_name: 'dpml0lwgi',
+  api_key: '111315721374665',
+  api_secret: 'JlB1mnBJ8Aa-P4WHb3ocF1iUZZE',
 });
 
 const scrapeWebsite = async url => {
