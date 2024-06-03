@@ -1,15 +1,23 @@
-// scraper.js
 const puppeteer = require('puppeteer');
-const path = require('path');
-const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 
-const ensureDirectoryExistence = filePath => {
-  const dirname = path.dirname(filePath);
-  if (fs.existsSync(dirname)) {
-    return true;
-  }
-  ensureDirectoryExistence(dirname);
-  fs.mkdirSync(dirname);
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET
+});
+
+
+const uploadToCloudinary = async buffer => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload_stream({ resource_type: 'image' }, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(result.secure_url);
+      }
+    }).end(buffer);
+  });
 };
 
 const scrapeWebsite = async url => {
@@ -17,21 +25,10 @@ const scrapeWebsite = async url => {
   try {
     browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.goto(url, {waitUntil: 'networkidle2'});
+    await page.goto(url, { waitUntil: 'networkidle2' });
 
-    // Define the screenshot path
-    const screenshotFilename = `${new Date().getTime()}.png`;
-    const screenshotPath = path.join(
-      __dirname,
-      'screenshots',
-      screenshotFilename,
-    );
-
-    // Ensure the directory exists
-    ensureDirectoryExistence(screenshotPath);
-
-    // Take a full-page screenshot
-    await page.screenshot({path: screenshotPath, fullPage: true});
+    // Take a full-page screenshot and get the buffer
+    const screenshotBuffer = await page.screenshot({ fullPage: true });
 
     const data = await page.evaluate(() => {
       const name = document.title || '';
@@ -98,8 +95,11 @@ const scrapeWebsite = async url => {
       };
     });
 
+    // Upload the screenshot buffer to Cloudinary
+    const cloudinaryUrl = await uploadToCloudinary(screenshotBuffer);
+
     await browser.close();
-    return {url, ...data, screenshotPath: screenshotFilename};
+    return { url, ...data, screenShotUrl: cloudinaryUrl };
   } catch (error) {
     if (browser) await browser.close();
     console.error('Error scraping website', error);
