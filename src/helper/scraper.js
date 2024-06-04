@@ -25,12 +25,8 @@ const uploadToCloudinary = async buffer => {
 const scrapeWebsite = async url => {
   let browser;
   try {
-    browser = await puppeteer.launch({
-  headless: 'shell',
-  args: ['--enable-gpu'],
-});
+    browser = await puppeteer.launch();
     const page = await browser.newPage();
-
     await page.goto(url, {waitUntil: 'networkidle2'});
 
     // Take a full-page screenshot and get the buffer
@@ -100,7 +96,6 @@ const scrapeWebsite = async url => {
         email,
       };
     });
-
     // Upload the screenshot buffer to Cloudinary
     const cloudinaryUrl = await uploadToCloudinary(screenshotBuffer);
 

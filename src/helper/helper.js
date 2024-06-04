@@ -9,7 +9,6 @@ const GetOrDefault = (item, defaultValue) => {
 
 const GenPrevNextUrls = (request, page, limit, total) => {
   let url = GetFullUrl(request);
-  console.log(url);
   let totalPages = Math.ceil(total / limit);
   let nextPage =
     Math.floor(page) < Math.floor(totalPages) ? Math.floor(page) + 1 : null;
@@ -40,7 +39,6 @@ const GetFullUrl = request => {
 
 const ObjToQueryString = obj => {
   let params = new URLSearchParams();
-  console.log({params});
   Object.keys(obj).forEach(function (key) {
     params.append(key, obj[key]);
   });
