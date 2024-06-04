@@ -26,8 +26,9 @@ const scrapeWebsite = async url => {
   let browser;
   try {
     browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    });
+  headless: 'shell',
+  args: ['--enable-gpu'],
+});
     const page = await browser.newPage();
 
     await page.goto(url, {waitUntil: 'networkidle2'});
