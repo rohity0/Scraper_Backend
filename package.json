@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "sudo apt-get update && sudo apt-get install google-chrome-stable",
+    "preinstall": "apt-get update && apt-get install google-chrome-stable",
     "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
